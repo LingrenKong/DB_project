@@ -19,3 +19,4 @@ def get_cursor():
     # Trusted_Connection=yes;可能需要
     cursor = cnxn.cursor()
     return cursor
+
