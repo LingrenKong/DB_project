@@ -59,4 +59,4 @@ def randUser(n):
             print(cr.rowcount) #影响的行数，检查是不是有效操作
 
 if __name__ == '__main__':
-    # randUser(200)
+    randUser(200)
