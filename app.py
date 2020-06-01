@@ -7,6 +7,8 @@ from matplotlib.figure import Figure
 
 app = Flask(__name__)
 
+#from flask.ext.bootstrap import Bootstrap
+#Bootstrap(app)  # 把程序实例即 app 传入构造方法进行初始化
 
 #数据库配置
 import pyodbc
@@ -28,12 +30,23 @@ def get_cursor():
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    return render_template('index.html')
 
+@app.route('/boostrap_demo/')
+def try_boostrap():
+    return render_template('base.html')
 
+@app.route('/admin/')
+def admin():
+    return render_template('admin.html')
 
-
-
+@app.route('/admin/summary/')
+def book_summary():
+    cursor = get_cursor()
+    exist = cursor.execute("SELECT * FROM book WHERE removed=0").fetchall()
+    cursor = get_cursor()
+    removed = cursor.execute("SELECT * FROM book WHERE removed=1").fetchall()
+    return render_template('book_summary.html',exist = exist,removed=removed)
 
 if __name__ == '__main__':
     app.run(debug=True)

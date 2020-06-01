@@ -20,3 +20,30 @@ def get_cursor():
     cursor = cnxn.cursor()
     return cursor
 
+def load_book(path):
+    import pandas as pd
+    import re
+    from numpy.random import randint
+    books = pd.read_csv(path,index_col=None)
+    cursor = get_cursor()
+    for i in range(len(books)):
+        row = books.iloc[i]
+        id = row['书号']
+        Bname = row['书名']
+        brief = row['摘要']
+        Btype = row['类别']
+        author = row['作者']
+        Press = row['出版社']
+        price = re.search(r'\d+\.\d*',row['价格']).group()#清洗数据
+        num = randint(10,200)
+        removed = 0
+        try:
+            cursor.execute(
+                f"INSERT INTO book VALUES ('{id}','{Bname}','{brief}','{Btype}','{author}','{Press}',{price}, {num}, NULL, 0)"
+            )# 备注为NULL，书被删除设置为0（否）
+            cursor.commit()
+        except:
+            print(f"INSERT INTO book VALUES ('{id}','{Bname}','{brief}','{Btype}','{author}','{Press}',{price}, {num}, NULL, 0)")
+            print('上面一句有问题')
+
+load_book('books.csv')
