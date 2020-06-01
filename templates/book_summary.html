@@ -1,0 +1,67 @@
+{%  extends "base.html" %}
+
+{% block site_name %}管理界面{% endblock %}
+{% block header %}图书状况{% endblock %}
+{% block left_body %}
+        <ul>
+          <li class="list-item">
+            <a href="../">返回管理界面</a>
+          </li>
+          <li class="list-item">
+            <a href="">emm</a>
+          </li>
+        </ul>
+{% endblock %}
+
+{% block right_body %}
+    <h3>在库图书</h3>
+  <table class="table table-bordered">
+  <thead>
+  <tr class="table-active">
+      <th>ISBN</th>
+      <th>书名</th>
+      <th>类别</th>
+      <th>作者</th>
+      <th>出版社</th>
+      <th>价格</th>
+      <th>剩余数量</th>
+  </tr>
+  </thead>
+{% for row in exist %}
+<tr class="table-success">
+    <td>{{ row[0] }}</td>
+    <td>{{ row[1] }}</td>
+    <td>{{ row[3] }}</td>
+    <td>{{ row[4] }}</td>
+    <td>{{ row[5] }}</td>
+    <td>{{ row[6] }}</td>
+    <td>{{ row[7] }}</td>
+</tr>
+{% endfor %}  <table>
+</table>
+
+<h3>删除图书</h3>
+  <table class="table table-bordered">
+  <tr class="table-active">
+      <th>ISBN</th>
+      <th>书名</th>
+      <th>类别</th>
+      <th>作者</th>
+      <th>出版社</th>
+      <th>价格</th>
+      <th>剩余数量</th>
+  </tr>
+{% for row in removed %}
+<tr class="table-danger">
+    <td>{{ row[0] }}</td>
+    <td>{{ row[1] }}</td>
+    <td>{{ row[3] }}</td>
+    <td>{{ row[4] }}</td>
+    <td>{{ row[5] }}</td>
+    <td>{{ row[6] }}</td>
+    <td>{{ row[7] }}</td>
+</tr>
+{% endfor %}  <table>
+</table>
+
+{% endblock %}
