@@ -1,0 +1,69 @@
+{%  extends "base.html" %}
+
+{% block site_name %}用户界面{% endblock %}
+{% block header %}用户模式{% endblock %}
+{% block left_body %}
+        <ul>
+          <li class="list-item">
+            <a href="../">返回用户主界面</a>
+          </li>
+          <li class="list-item">
+            <a href="../borrow/">前去借书</a>
+          </li>
+          <li class="list-item">
+            <a href="../return/">前去还书</a>
+          </li>
+           <li class="list-item">
+            <a href="emm">emm</a>
+          </li>
+        </ul>
+{% endblock %}
+
+{% block right_body %}
+
+{% if search==None %}
+
+<form role="form" action="" method="post" class="form-inline">
+    <div class="form-group">
+
+        <label for="Bname">
+            输入书名查询（可以不完整）
+        </label>
+        <input type="text" class="form-control" name="Bname"/>
+    </div>
+    <button type="submit" class="btn btn-primary">
+        Submit
+    </button>
+</form>
+{% endif %}
+
+{% if search != None%}
+<table class="table table-bordered">
+  <thead>
+  <tr class="table-active">
+      <th>ISBN</th>
+      <th>书名</th>
+      <th>类别</th>
+      <th>作者</th>
+      <th>出版社</th>
+      <th>价格</th>
+      <th>剩余数量</th>
+  </tr>
+  </thead>
+{% for row in search %}
+<tr class="table-success">
+    <td>{{ row[0] }}</td>
+    <td>{{ row[1] }}</td>
+    <td>{{ row[3] }}</td>
+    <td>{{ row[4] }}</td>
+    <td>{{ row[5] }}</td>
+    <td>{{ row[6] }}</td>
+    <td>{{ row[7] }}</td>
+</tr>
+{% endfor %}
+</table>
+<a href="">我还要查询其他书</a>
+{% endif %}
+
+
+{% endblock %}

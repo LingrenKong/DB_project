@@ -1,0 +1,35 @@
+{%  extends "base.html" %}
+
+{% block site_name %}用户界面{% endblock %}
+{% block header %}用户模式{% endblock %}
+{% block left_body %}
+        <ul>
+          <li class="list-item">
+            <a href="../">返回用户主界面</a>
+          </li>
+          <li class="list-item">
+            <a href="../borrow/">前去借书</a>
+          </li>
+          <li class="list-item">
+            <a href="../return/">前去还书</a>
+          </li>
+           <li class="list-item">
+            <a href="emm">emm</a>
+          </li>
+        </ul>
+{% endblock %}
+
+{% block right_body %}
+<form role="form" action="borrow-check/" method="post">
+    <div class="form-group">
+
+        <label for="id">
+            输入书号
+        </label>
+        <input type="text" class="form-control" name="id" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        Submit
+    </button>
+</form>
+{% endblock %}

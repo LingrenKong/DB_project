@@ -1,0 +1,59 @@
+{%  extends "base.html" %}
+
+{% block site_name %}用户界面{% endblock %}
+{% block header %}用户模式{% endblock %}
+{% block left_body %}
+        <ul>
+          <li class="list-item">
+            <a href="search/">图书信息查询</a>
+          </li>
+          <li class="list-item">
+            <a href="borrow/">图书借阅</a>
+          </li>
+          <li class="list-item">
+            <a href="return/">图书还书</a>
+          </li>
+           <li class="list-item">
+            <a href="/admin/">转到管理员界面</a>
+          </li>
+        </ul>
+{% endblock %}
+
+{% block right_body %}
+<h4>
+    这里是用户的界面，可以查询图书信息，也可以登录后在自己的账号下进行借阅、还书
+</h4>
+<br>
+{% if mode==1 or mode==3%}
+<h3 class="text-center text-primary">请登录</h3>
+<form role="form" action="" method="post">
+    <div class="form-group">
+
+        <label for="id">
+            用户学生/教工号
+        </label>
+        <input type="text" class="form-control" name="id"/>
+    </div>
+    <div class="form-group">
+
+        <label for="password">
+            密码
+        </label>
+        <input type="password" class="form-control" name="password" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        Submit
+    </button>
+</form>
+
+{% endif %}
+
+{% if mode==2 %}
+<h3 class="text-danger text-center">您已经成功登录</h3>
+{% endif %}
+
+{% if mode==3 %}
+<h3 class="text-danger text-center">您登录失败，是不是账号密码有误？</h3>
+{% endif %}
+
+{% endblock %}
