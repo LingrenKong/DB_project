@@ -20,6 +20,8 @@ def get_cursor():
     cursor = cnxn.cursor()
     return cursor
 
+
+
 def load_book(path):
     import pandas as pd
     import re
@@ -39,11 +41,16 @@ def load_book(path):
         removed = 0
         try:
             cursor.execute(
-                f"INSERT INTO book VALUES ('{id}','{Bname}','{brief}','{Btype}','{author}','{Press}',{price}, {num}, NULL, 0)"
+                f"INSERT INTO Book VALUES ('{id}','{Bname}','{brief}','{Btype}','{author}','{Press}',{price}, {num}, NULL, 0)"
             )# 备注为NULL，书被删除设置为0（否）
+            cursor.execute(
+                f"INSERT INTO BAlter VALUES ('{id}','Admin000','2020-05-01','新书入库','{num}',0,'{num}','5月1日由管理员导入初始图书数据')"
+            )
             cursor.commit()
         except:
             print(f"INSERT INTO book VALUES ('{id}','{Bname}','{brief}','{Btype}','{author}','{Press}',{price}, {num}, NULL, 0)")
+            print(f"INSERT INTO BAlter VALUES ('{id}','Admin000','2020-05-01','{num}',0,'{num}','5月1日由管理员导入初始图书数据')")
             print('上面一句有问题')
+
 
 load_book('books.csv')
