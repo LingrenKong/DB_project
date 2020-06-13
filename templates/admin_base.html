@@ -1,0 +1,20 @@
+{%  extends "base.html" %}
+
+{% block site_name %}管理界面{% endblock %}
+{% block header %}管理员模式{% endblock %}
+{% block left_body %}
+        <ul class="nav flex-column nav-pills">
+        <li class="nav-item">
+            <a  class="nav-link active" href="/">转到主界面</a>
+        </li>
+          <li class="nav-item">
+            <a  class="nav-link" href="/admin/">转到管理界面</a>
+          </li>
+        </ul>
+{% endblock %}
+
+{% block right_body %}
+
+只需要处理右半边就行
+
+{% endblock %}

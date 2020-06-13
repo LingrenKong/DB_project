@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>炫酷的ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+</head>
+
+
+
+<body>
+
+
+
+
+
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main1" style="width: 600px;height:400px;"></div>
+</body>
+
+<script type="text/javascript">
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart1 = echarts.init(document.getElementById('main1'));
+
+    // 指定图表的配置项和数据
+        var option1 = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data:['用户量']
+            },
+            xAxis: {
+                data: ["学生","教师","校外注册"]
+            },
+            yAxis: {},
+            series: [{
+                name: '用户情况',
+                type: 'bar',
+                data: {{test|tojson}}
+            }]
+        };
+
+    myChart1.setOption(option1);
+</script>
+
+</html>
+
+

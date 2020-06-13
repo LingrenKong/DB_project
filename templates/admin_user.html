@@ -1,0 +1,75 @@
+{%  extends "admin_base.html" %}
+
+{% block right_body %}
+
+<h3 class="text-success text-center">学生解禁</h3>
+{% if restricted==None%}
+    <h3 class="text-danger text-center">似乎还没有被禁的学生</h3>
+{% endif %}
+
+{% if restricted!=None %}
+    <table class="table table-bordered">
+  <thead>
+  <tr class="table-active">
+      <th>账号</th>
+      <th>姓名</th>
+      <th>类型</th>
+      <th>备注</th>
+      <th>点击解禁</th>
+  </tr>
+  </thead>
+{% for row in restricted %}
+<tr class="table-success">
+    <td>{{ row[0] }}</td>
+    <td>{{ row[1] }}</td>
+    <td>{{ row[3] }}</td>
+    <td>{{ row[5] }}</td>
+    <td>
+        <form role="form" action="/admin/user-control/free-act/" method="post" class="form-inline">
+            <input type="hidden" name="id" value="{{ row[0] }}"/>
+            <label for="date">
+                手动输入操作的日期（因为这个如果自动日期，不便测试）
+            </label>
+            <input type="date" class="form-control" name="date" />
+            <button type="submit" class="btn btn-primary">
+                解禁
+            </button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<h3 class="text-success text-center">各类用户数量饼图</h3>
+<div id="main1" style="width: 600px;height:400px;margin:auto;"></div>
+<script type="text/javascript">
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart1 = echarts.init(document.getElementById('main1'));
+
+    // 指定图表的配置项和数据
+        var option1 = {
+            title: {
+                text: '各类用户数量'
+            },
+            tooltip: {},
+            legend: {
+                data:['用户量']
+            },
+            xAxis: {
+                data: ["学生","教师","校外注册"]
+            },
+            yAxis: {},
+            series: [{
+                name: '用户情况',
+                type: 'bar',
+                data: {{chart1|tojson}}
+            }]
+        };
+
+    myChart1.setOption(option1);
+</script>
+
+{% endblock %}
+

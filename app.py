@@ -4,12 +4,15 @@ from flask import Response, request, render_template_string,  redirect, Blueprin
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.backends.backend_svg import FigureCanvasSVG
 from matplotlib.figure import Figure
+import json
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "klr"#设置一个key才可以有session，否则session是none
 #from flask.ext.bootstrap import Bootstrap
 #Bootstrap(app)  # 把程序实例即 app 传入构造方法进行初始化
 
+#数据库配置
 #数据库配置
 import pyodbc
 server = 'localhost'
@@ -73,13 +76,39 @@ def admin_logout():
     session['Atype'] = None
     return redirect('/admin/')
 
-@app.route('/admin/book-summary/')
+@app.route('/admin/book-control/')
 def book_summary():
     cursor = get_cursor()
     exist = cursor.execute("SELECT * FROM book WHERE removed=0").fetchall()
     cursor = get_cursor()
     removed = cursor.execute("SELECT * FROM book WHERE removed=1").fetchall()
     return render_template('book_summary.html',exist = exist,removed=removed)
+
+@app.route('/admin/user-control/')
+def free_user():
+    cursor = get_cursor()
+    restricted = cursor.execute("SELECT * FROM UserList WHERE Urestrict=1").fetchall()
+    print('restricted:',restricted)
+    s = cursor.execute("SELECT COUNT(*) FROM UserLIst WHERE Utype='学生'").fetchone()[0]
+    t = cursor.execute("SELECT COUNT(*) FROM UserLIst WHERE Utype='教师'").fetchone()[0]
+    u = cursor.execute("SELECT COUNT(*) FROM UserLIst WHERE Utype='校外用户'").fetchone()[0]
+    print(s,t,u)
+    data = [s,t,u]
+    return render_template('admin_user.html',restricted=restricted,chart1=data)
+
+@app.route('/admin/user-control/free-act/',methods=['POST'])
+def free_act():
+    Uno = request.form['id']
+    Ano = session['admin_id']
+    date = request.form['date']
+    cursor = get_cursor()
+    sql1 = f"UPDATE UserList SET Urestrict=0 WHERE Uno='{Uno}'"
+    sql2 = f"INSERT INTO UAlter VALUES ('{Uno}','{Ano}','{date}','解封','通过临时权限解封账号界面对于用户进行解封')"
+    print('POST-/admin/temp/act/涉及语句：',sql1,sql2)
+    cursor.execute(sql1)
+    cursor.execute(sql2)
+    cursor.commit()
+    return redirect('/admin/temp/')
 
 # user部分
 
@@ -231,8 +260,8 @@ def book_return_act():
 
 @app.route('/test/',methods = ['POST', 'GET'])
 def test():
-    print(session['borrowlist'])
-    return redirect('/')
+    test = [2,3,3]
+    return render_template('test.html',test=test)
 
 if __name__ == '__main__':
     app.run(debug=True)
