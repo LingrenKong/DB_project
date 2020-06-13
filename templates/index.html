@@ -3,18 +3,19 @@
 {% block site_name %}主页{% endblock %}
 {% block header %}校园图书管理系统{% endblock %}
 {% block left_body %}
-        <ul>
-          <li class="list-item">
-            <a href="/admin">管理员界面</a>
+        <ul class="nav flex-column nav-pills">
+          <li class="nav-item">
+            <a class="nav-link" href="/user/">用户界面</a>
           </li>
-          <li class="list-item">
-            <a href="/user">用户界面</a>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/">管理员界面</a>
           </li>
         </ul>
 {% endblock %}
 
 {% block right_body %}
-<p>
-    本作业旨在完成一个图书管理系统，从而实践学习到的数据库知识
-</p>
+<h4>
+    本作业旨在完成一个图书管理系统，
+    从而实践学习到的数据库知识
+</h4>
 {% endblock %}

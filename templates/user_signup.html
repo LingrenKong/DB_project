@@ -1,0 +1,64 @@
+{%  extends "base.html" %}
+
+{% block site_name %}用户界面{% endblock %}
+{% block header %}用户模式{% endblock %}
+{% block left_body %}
+        <ul class="nav flex-column nav-pills">
+            <li class="nav-item">
+                <a  class="nav-link active" href="/">转到主界面</a>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/">回到用户界面</a>
+        </ul>
+{% endblock %}
+
+{% block right_body %}
+
+
+<h3 class="text-center text-primary">
+    校外人员在此注册
+</h3>
+<form role="form" action="/user/signup/" method="post">
+    <div class="form-group">
+
+        <label for="id">
+            账号
+        </label>
+        <input type="text" class="form-control" name="id"/>
+    </div>
+    <div class="form-group">
+
+        <label for="name">
+            姓名
+        </label>
+        <input type="text" class="form-control" name="name"/>
+    </div>
+    <div class="form-group">
+
+        <label for="password">
+            密码
+        </label>
+        <input type="password" class="form-control" name="password" />
+    </div>
+    <div class="form-group">
+
+        <label for="password2">
+            密码（再次确认）
+        </label>
+        <input type="password" class="form-control" name="password2" />
+    </div>
+    <div class="form-group">
+
+        <label for="date">
+            YYYY-MM-DD形式输入注册日期（因为这个如果自动日期，不便测试）
+        </label>
+        <input type="date" class="form-control" name="date" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        确认提交
+    </button>
+</form>
+
+
+
+{% endblock %}

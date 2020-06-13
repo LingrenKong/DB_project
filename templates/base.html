@@ -27,21 +27,21 @@
     <div class="row">
       <div class="col-md-3">
       {% block left_body %}
-        <ul>
-          <li class="list-item">
-            左侧列表栏
+      <ul class="nav flex-column nav-pills">
+          <li class="nav-item">
+              <a class="nav-link active" href="/">返回</a>
           </li>
-          <li class="list-item">
-            建议每次都替换
+          <li class="nav-item">
+              <a class="nav-link" href="/">返回</a>
           </li>
-        </ul>
       {% endblock %}
+      </ul>
       </div>
       <div class="col-md-9">
       {% block right_body %}
-        <p>
+        <h2>
             右侧版面主题
-        </p>
+        </h2>
       {% endblock %}
       </div>
 
