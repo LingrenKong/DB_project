@@ -3,18 +3,12 @@
 {% block site_name %}用户界面{% endblock %}
 {% block header %}用户模式{% endblock %}
 {% block left_body %}
-        <ul>
-          <li class="list-item">
-            <a href="../">返回用户主界面</a>
-          </li>
-          <li class="list-item">
-            <a href="../borrow/">前去借书</a>
-          </li>
-          <li class="list-item">
-            <a href="../return/">前去还书</a>
-          </li>
-           <li class="list-item">
-            <a href="emm">emm</a>
+        <ul class="nav flex-column nav-pills">
+            <li class="nav-item">
+                <a  class="nav-link active" href="/">转到主界面</a>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../">返回用户主界面</a>
           </li>
         </ul>
 {% endblock %}
@@ -23,7 +17,7 @@
 
 {% if search==None %}
 
-<form role="form" action="" method="post" class="form-inline">
+<form role="form" action="" method="get" class="form-inline">
     <div class="form-group">
 
         <label for="Bname">
@@ -31,6 +25,7 @@
         </label>
         <input type="text" class="form-control" name="Bname"/>
     </div>
+    <input type="hidden" name="p" value="1"/>
     <button type="submit" class="btn btn-primary">
         Submit
     </button>
@@ -48,6 +43,7 @@
       <th>出版社</th>
       <th>价格</th>
       <th>剩余数量</th>
+      <th>点击加入借阅列表</th>
   </tr>
   </thead>
 {% for row in search %}
@@ -59,10 +55,31 @@
     <td>{{ row[5] }}</td>
     <td>{{ row[6] }}</td>
     <td>{{ row[7] }}</td>
+    <td>
+        <form role="form" action="/user/borrow/add/" method="get" class="form-inline">
+            <input type="hidden" name="ISBN" value="{{ row[0] }}"/>
+
+            <button type="submit" class="btn btn-primary {% if  row[7] ==0 %}disabled{%  endif %}">
+                我要借书
+            </button>
+        </form>
+    </td>
 </tr>
+
 {% endfor %}
 </table>
-<a href="">我还要查询其他书</a>
+
+<div>
+<ul class="pagination">
+    <li class="page-item"><a class="page-link" href="/user/search/?Bname={{ keyword }}&p={{ page-1 }}">Previous</a></li>
+    <li class="page-item"><a class="page-link" href="/user/search/?Bname={{ keyword }}&p=1">1</a></li>
+    <li class="page-item"><a class="page-link" href="/user/search/?Bname={{ keyword }}&p=2">2</a></li>
+    <li class="page-item"><a class="page-link" href="/user/search/?Bname={{ keyword }}&p=3">3</a></li>
+    <li class="page-item"><a class="page-link" href="/user/search/?Bname={{ keyword }}&p={{ page+1 }}">Next</a></li>
+</ul>
+</div>
+
+<a href="/user/search/">我还要查询其他书</a>
 {% endif %}
 
 

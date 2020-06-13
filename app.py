@@ -92,7 +92,7 @@ def user():
     return render_template('user.html',login=login,error=error,Uname=session.get('Uname'),Utype=session.get('Utype'),Urestrict=session.get('Urestrict'))
 
 @app.route('/user/login/',methods = ['POST'])
-def uer_login():
+def user_login():
     Uno = request.form['id']
     password = get_md5(request.form['password'])
     print(password)
@@ -105,6 +105,7 @@ def uer_login():
         session['Uname']=data[1]
         session['Utype']=data[3]
         session['Urestrict']=data[6]
+        session['borrowlist']=[]
         return redirect(url_for('user'))
     else :
         return redirect(url_for('user',error=True))
@@ -133,26 +134,105 @@ def user_signup():
     return render_template('user_signup.html')
 
 
-@app.route('/user/search/',methods = ['POST', 'GET'])
+@app.route('/user/search/',methods = ['GET'])
 def book_search():
     # 这个搜索不需要登录要求
     search = None
-    cursor = get_cursor()
-    if request.method == 'POST':
-        form = request.form
-        search = cursor.execute(f"SELECT * FROM book WHERE removed=0 AND Bname LIKE '%{form.get('Bname')}%'")
-    return render_template('book_search.html',search=search)
+    page = 1
+    if request.args.get('Bname')!=None:
+        cursor = get_cursor()
+        search = cursor.execute(f"SELECT * FROM book WHERE removed=0 AND Bname LIKE '%{request.args.get('Bname')}%'")
+        page = int(request.args.get('p'))
+        #print(search)
+        search = list(search)[(page-1)*5:page*5]
+    return render_template('book_search.html',search=search,page=page,keyword=request.args.get('Bname'))
+
+@app.route('/user/borrow/add/',methods = ['GET'])
+def book_add():
+    ISBN = request.args.get('ISBN')
+    #print('ISBN:',ISBN)
+    if session['borrowlist']==None:
+        session['borrowlist']=[]
+    #print(type(session['borrowlist']),'~',session['borrowlist'])
+    temp = session['borrowlist'].copy()
+    temp.append(ISBN)
+    session['borrowlist'] = temp#这个是session的一个特色，如果是作为对象用append并不能有效修改
+    #print('book_add:session[borrowlist]',session['borrowlist'])
+    return redirect('/user/borrow/')
 
 @app.route('/user/borrow/',methods = ['POST', 'GET'])
 def book_borrow():
     # 借阅需要登录
-    ISBN = None
-    cursor = get_cursor()
-    print(session.get('user_id'))
     if not session.get('user_id') or session['user_id']==None:
         #print(session.get('user_id'))
         return redirect('/user/')
-    return render_template('book_borrow.html',id=session.get('user_id'))
+
+    ISBN = None
+    cursor = get_cursor()
+    print(session['borrowlist'])
+    if session['borrowlist']==None or len(session['borrowlist'])==0:
+        target=None
+        session['borrowlist']=[]
+    else:
+        target=[]
+        for one in session['borrowlist']:
+            print(f"SELECT * FROM book WHERE Bno ={one}")
+            cr = cursor.execute(f"SELECT * FROM book WHERE Bno={one}")
+            target.append(cr.fetchone())
+            print(target)
+    #print(session['borrowlist'])
+    #print(session.get('user_id'))
+    return render_template('book_borrow.html',id=session.get('user_id'),target=target)
+
+@app.route('/user/borrow/act/',methods = ['POST'])
+def book_act():
+    cursor = get_cursor()
+    date = request.form['date']
+    Uno = session['user_id']
+    for Bno in session['borrowlist']:
+        sql1 = f"INSERT INTO Borrow VALUES ('{Uno}','{Bno}','{date}',14,NULL,0,NULL)"
+        print(sql1)
+        sql2 = f"UPDATE UserList SET Uget =Uget+1 WHERE Uno='{Uno}' "
+        sql3 = f"UPDATE Book SET num =num-1 WHERE Bno='{Bno}' "
+        cursor.execute(sql1)
+        cursor.execute(sql2)
+        cursor.execute(sql3)
+    cursor.commit()
+    session['borrowlist'] = []
+    return redirect('/user/')
+
+@app.route('/user/return/')
+def book_return():
+    # 需要登录
+    if not session.get('user_id') or session['user_id']==None:
+        #print(session.get('user_id'))
+        return redirect('/user/')
+
+    cursor = get_cursor()
+    sql = f"SELECT Book.Bno,Bname FROM Borrow,Book WHERE Uno='{session['user_id']}' AND Book.Bno=Borrow.Bno AND isReturn=0"
+    borrowed = cursor.execute(sql)
+    return render_template('book_return.html',borrowed=borrowed)
+
+@app.route('/user/return/act/',methods=['POST'])
+def book_return_act():
+    Uno = session['user_id']
+    Bno = request.form['ISBN']
+    date = request.form['date']
+    cursor = get_cursor()
+    sql1 = f"UPDATE UserList SET Uget=Uget-1 WHERE Uno='{Uno}'"
+    sql2 = f"UPDATE Borrow SET isReturn=1,returnDate='{date}'  WHERE Uno='{Uno}' AND Bno='{Bno}'"
+    sql3 = f"UPDATE Book SET num=num+1 WHERE Bno='{Bno}'"
+    print(sql1,sql2,sql3)
+    cursor.execute(sql1)
+    cursor.execute(sql2)
+    cursor.execute(sql3)
+    cursor.commit()
+    return redirect('/user/return/')
+
+@app.route('/test/',methods = ['POST', 'GET'])
+def test():
+    print(session['borrowlist'])
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True)

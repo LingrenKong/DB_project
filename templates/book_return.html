@@ -10,9 +10,6 @@
           <li class="nav-item">
             <a class="nav-link" href="../">返回用户主界面</a>
           </li>
-           <li class="nav-item">
-            <a class="nav-link" href="/user/search">看看有没有其他书</a>
-          </li>
         </ul>
 {% endblock %}
 
@@ -34,51 +31,41 @@
     -->
     <h3 class="text-active text-center">这是已在借阅列表的图书</h3>
 
-{% if target==None%}
-    <h3 class="text-danger text-center">您似乎还没有添加图书</h3>
+{% if borrowed==None%}
+    <h3 class="text-danger text-center">您似乎还没有在借的图书</h3>
 {% endif %}
 
-{% if target!=None %}
+{% if borrowed!=None %}
     <table class="table table-bordered">
   <thead>
   <tr class="table-active">
       <th>ISBN</th>
       <th>书名</th>
-      <th>类别</th>
-      <th>作者</th>
-      <th>出版社</th>
-      <th>价格</th>
-      <th>剩余数量</th>
+      <th>点击还书</th>
   </tr>
   </thead>
-{% for row in target %}
+{% for row in borrowed %}
 <tr class="table-success">
     <td>{{ row[0] }}</td>
     <td>{{ row[1] }}</td>
-    <td>{{ row[3] }}</td>
-    <td>{{ row[4] }}</td>
-    <td>{{ row[5] }}</td>
-    <td>{{ row[6] }}</td>
-    <td>{{ row[7] }}</td>
+    <td>
+        <form role="form" action="/user/return/act/" method="post" class="form-inline">
+            <input type="hidden" name="ISBN" value="{{ row[0] }}"/>
+            <label for="date">
+                手动输入还书日期（因为这个如果自动日期，不便测试）
+            </label>
+            <input type="date" class="form-control" name="date" />
+            <button type="submit" class="btn btn-primary">
+                我要还书
+            </button>
+        </form>
+    </td>
 </tr>
 {% endfor %}
 </table>
 
-<form role="form" action="/user/borrow/act/" method="post">
-    <div class="form-group">
-    <div class="form-group">
-        <label for="date">
-            手动输入借书日期（因为这个如果自动日期，不便测试）
-        </label>
-        <input type="date" class="form-control" name="date" />
-    </div>
-    <button type="submit" class="btn btn-primary">
-        确认借阅这些
-    </button>
-</form>
 
 {% endif %}
-
 
 
 {% endblock %}
