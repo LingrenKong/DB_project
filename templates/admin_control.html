@@ -1,0 +1,82 @@
+{%  extends "admin_base.html" %}
+
+
+{% block right_body %}
+
+{% if UAlter==None %}
+<h3 class="text-center text-danger">似乎还没有用户数据操作</h3>
+{% endif %}
+
+{% if UAlter != None%}
+<table class="table table-bordered">
+  <thead>
+  <tr class="table-active">
+      <th>用户号</th>
+      <th>管理员号</th>
+      <th>操作日期</th>
+      <th>操作类型</th>
+      <th>备注</th>
+  </tr>
+  </thead>
+{% for row in UAlter %}
+<tr class="table-success">
+    <td>{{ row[0] }}</td>
+    <td>{{ row[1] }}</td>
+    <td>{{ row[2] }}</td>
+    <td>{{ row[3] }}</td>
+    <td>{{ row[4] }}</td>
+</tr>
+
+{% endfor %}
+</table>
+
+{% endif %}
+
+{% if BAlter==None %}
+<h3 class="text-center text-danger">似乎还没有图书数据操作</h3>
+{% endif %}
+
+{% if BAlter != None%}
+<table class="table table-bordered">
+  <thead>
+  <tr class="table-active">
+      <th>图书号</th>
+      <th>管理员号</th>
+      <th>操作日期</th>
+      <th>操作类型</th>
+      <th>变化量</th>
+      <th>旧值</th>
+      <th>新值</th>
+      <th>备注</th>
+  </tr>
+  </thead>
+{% for row in BAlter %}
+<tr class="table-success">
+    <td>{{ row[0] }}</td>
+    <td>{{ row[1] }}</td>
+    <td>{{ row[2] }}</td>
+    <td>{{ row[3] }}</td>
+    <td>{{ row[4] }}</td>
+    <td>{{ row[5] }}</td>
+    <td>{{ row[6] }}</td>
+    <td>{{ row[7] }}</td>
+</tr>
+
+{% endfor %}
+</table>
+
+{% endif %}
+
+<div>
+<ul class="pagination">
+    <li class="page-item"><a class="page-link" href="/admin/admin-control/?p={{ page-1 }}">前一页</a></li>
+    <li class="page-item"><a class="page-link" href="/admin/admin-control/?p=1">1</a></li>
+    <li class="page-item"><a class="page-link" href="/admin/admin-control/?p=2">2</a></li>
+    <li class="page-item"><a class="page-link" href="/admin/admin-control/?p=3">3</a></li>
+    <li class="page-item"><a class="page-link" href="/admin/admin-control/?p={{ page+1 }}">后一页</a></li>
+</ul>
+</div>
+
+
+
+{% endblock %}

@@ -110,6 +110,21 @@ def free_act():
     cursor.commit()
     return redirect('/admin/temp/')
 
+@app.route('/admin/admin-control/',methods = ['GET'])
+def admin_control():
+    if session['Atype']!='超级管理':
+        return  redirect('/admin/')
+    if request.args.get('p')!=None:
+        page = int(request.args.get('p'))
+    else:
+        page = 1
+    cursor = get_cursor()
+    U = cursor.execute(f"SELECT * FROM UAlter ORDER BY actDate ASC").fetchall()
+    B = cursor.execute(f"SELECT * FROM BAlter ORDER BY actDate ASC").fetchall()
+    U = list(U)[(page-1)*5:page*5]
+    B = list(B)[(page-1)*5:page*5]
+    return render_template('admin_control.html',UAlter=U,BAlter=B,page=page)
+
 # user部分
 
 @app.route('/user/',methods = ['POST', 'GET'])
