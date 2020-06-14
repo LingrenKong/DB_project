@@ -112,7 +112,7 @@ def admin_book_add():
         cursor.execute(sql1)
         cursor.execute(sql2)
         cursor.commit()
-        redirect('/admin/book-control/add/')
+        return redirect('/admin/book-control/add/')
 
 @app.route('/admin/book-control/remove/',methods=['POST'])
 def admin_book_remove():
@@ -127,7 +127,7 @@ def admin_book_remove():
     cursor.execute(sql1)
     cursor.execute(sql2)
     cursor.commit()
-    redirect('/admin/book-control/')
+    return redirect('/admin/book-control/')
 
 @app.route('/admin/book-control/reset/',methods=['POST'])
 def admin_book_reset():
@@ -142,7 +142,7 @@ def admin_book_reset():
     cursor.execute(sql1)
     cursor.execute(sql2)
     cursor.commit()
-    redirect('/admin/book-control/')
+    return redirect('/admin/book-control/')
 
 @app.route('/admin/user-control/')
 def free_user():
@@ -210,6 +210,23 @@ def admin_control():
     U = list(U)[(page-1)*5:page*5]
     B = list(B)[(page-1)*5:page*5]
     return render_template('admin_control.html',UAlter=U,BAlter=B,page=page)
+
+@app.route('/admin/data/',methods = ['POST', 'GET'])
+def admin_data():
+    if request.method=='GET':
+        return render_template('admin_data.html',get=True,x=[],y=[])
+    else:
+        key = request.form['key']
+        cursor = get_cursor()
+        sql = f"SELECT Bname,price FROM Book WHERE Btype LIKE '%{key}%'"
+        data = cursor.execute(sql).fetchall()
+        x = []
+        y = []
+        for row in data:
+            x.append(row[0])
+            y.append(float(row[1]))
+        print(x,y)
+        return render_template('admin_data.html', get=False,x=x,y=json.dumps(y))
 
 # user部分
 

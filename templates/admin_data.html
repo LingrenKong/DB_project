@@ -1,0 +1,52 @@
+{%  extends "admin_base.html" %}
+
+{% block right_body %}
+
+<form role="form" action="" method="post">
+        <div class="form-group">
+        <label for="date">
+            查找图书的标签
+        </label>
+        <input type="text" class="form-control" name="key" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        确认查找
+    </button>
+</form>
+
+{% if get==False %}
+    <h3 class="text-success text-center">含参数统计图</h3>
+<div id="main1" style="width: 600px;height:400px;margin:auto;"></div>
+<script type="text/javascript">
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart1 = echarts.init(document.getElementById('main1'));
+
+    // 指定图表的配置项和数据
+        var option1 = {
+            title: {
+                text: '标签下的书名与价格'
+            },
+            legend: {
+                data:['价格']
+            },
+            xAxis: {
+                type: 'category',
+                data: {{ x|tojson }}
+            },
+            yAxis: {
+            },
+            series: [{
+                name: '价格',
+                type: 'bar',
+                data: {{y}}
+            }]
+        };
+
+    myChart1.setOption(option1);
+</script>
+
+{% endif %}
+
+{% endblock %}
+

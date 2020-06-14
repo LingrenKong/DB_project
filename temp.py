@@ -8,3 +8,7 @@ import datetime
 a = datetime.datetime.strptime('2020-06-01','%Y-%m-%d')
 print(a)
 (a+datetime.timedelta(21)).strftime('%Y-%m-%d')
+
+import json
+b = [2.5,3.6]
+json.dumps(b)
