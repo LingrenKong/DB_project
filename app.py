@@ -79,14 +79,44 @@ def admin_logout():
 
 @app.route('/admin/book-control/')
 def book_summary():
+    if session.get('admin_id')==None or session['Atype'] not in ['超级管理','图书管理']:
+        return redirect('/admin/')
     cursor = get_cursor()
     exist = cursor.execute("SELECT * FROM book WHERE removed=0").fetchall()
     cursor = get_cursor()
     removed = cursor.execute("SELECT * FROM book WHERE removed=1").fetchall()
-    return render_template('book_summary.html',exist = exist,removed=removed)
+    return render_template('admin_book.html',exist = exist,removed=removed)
+
+@app.route('/admin/book-control/add/',methods=['POST','GET'])
+def admin_book_add():
+    if session.get('admin_id')==None or session['Atype'] not in ['超级管理','图书管理']:
+        return redirect('/admin/')
+    if request.method =='GET':
+        return render_template('admin_book_add.html')
+    else:
+        Ano = session['admin_id']
+        Bno = request.form['ISBN']
+        Bname = request.form['Bname']
+        brief = request.form['brief']
+        Btype = request.form['Btype']
+        author = request.form['author']
+        Press = request.form['Press']
+        price = request.form['price']
+        num = request.form['num']
+        date = request.form['date']
+        sql1 = f"INSERT INTO Book VALUES ('{Bno}','{Bname}','{brief}','{Btype}','{author}','{Press}',{price},{num},'在{date}购入此书共计{num}本,由{Ano}进行操作',0)"
+        sql2 = f"INSERT INTO BAlter VALUES ('{Bno}','{Ano}','{date}','新书入库',{num},0,{num},'在{date}购入此书共计{num}本,由{Ano}进行操作')"
+        print(sql1,sql2)
+        cursor = get_cursor()
+        cursor.execute(sql1)
+        cursor.execute(sql2)
+        cursor.commit()
+        redirect('/admin/book-control/add/')
 
 @app.route('/admin/user-control/')
 def free_user():
+    if session.get('admin_id')==None or session['Atype'] not in ['超级管理','用户管理']:
+        return redirect('/admin/')
     cursor = get_cursor()
     restricted = cursor.execute("SELECT * FROM UserList WHERE Urestrict=1").fetchall()
     print('restricted:',restricted)
@@ -99,6 +129,8 @@ def free_user():
 
 @app.route('/admin/user-control/free-act/',methods=['POST'])
 def free_act():
+    if session.get('admin_id')==None or session['Atype'] not in ['超级管理','用户管理']:
+        return redirect('/admin/')
     Uno = request.form['id']
     Ano = session['admin_id']
     date = request.form['date']
