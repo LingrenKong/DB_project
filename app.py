@@ -218,7 +218,7 @@ def admin_data():
     else:
         key = request.form['key']
         cursor = get_cursor()
-        sql = f"SELECT Bname,price FROM Book WHERE Btype LIKE '%{key}%'"
+        sql = f"SELECT Bname,num FROM Book WHERE Btype LIKE '%{key}%'"
         data = cursor.execute(sql).fetchall()
         x = []
         y = []
@@ -226,7 +226,7 @@ def admin_data():
             x.append(row[0])
             y.append(float(row[1]))
         print(x,y)
-        return render_template('admin_data.html', get=False,x=x,y=json.dumps(y))
+        return render_template('admin_data.html', get=False,x=x,y=json.dumps(y),key=key)
 
 # user部分
 

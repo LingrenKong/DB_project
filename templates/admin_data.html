@@ -25,10 +25,10 @@
     // 指定图表的配置项和数据
         var option1 = {
             title: {
-                text: '标签下的书名与价格'
+                text: '标签|{{ key }}|下的书名与数目'
             },
             legend: {
-                data:['价格']
+                data:['数目']
             },
             xAxis: {
                 type: 'category',
@@ -37,7 +37,7 @@
             yAxis: {
             },
             series: [{
-                name: '价格',
+                name: '数目',
                 type: 'bar',
                 data: {{y}}
             }]
