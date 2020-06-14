@@ -27,6 +27,7 @@
       <th>出版社</th>
       <th>价格</th>
       <th>剩余数量</th>
+      <th>下架操作</th>
   </tr>
   </thead>
 {% for row in exist %}
@@ -38,6 +39,21 @@
     <td>{{ row[5] }}</td>
     <td>{{ row[6] }}</td>
     <td>{{ row[7] }}</td>
+<td>
+    <form role="form" action="/admin/book-control/remove/" method="post">
+    <input type="hidden" value="{{ row[0] }}" name="ISBN">
+    <input type="hidden" value="{{ row[7] }}" name="num">
+        <div class="form-group">
+        <label for="date">
+            手动输入日期（因为这个如果自动日期，不便测试）
+        </label>
+        <input type="date" class="form-control" name="date" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        确认下架
+    </button>
+</form>
+</td>
 </tr>
 {% endfor %}
 </table>
@@ -52,6 +68,7 @@
       <th>出版社</th>
       <th>价格</th>
       <th>剩余数量</th>
+      <th>恢复操作</th>
   </tr>
 {% for row in removed %}
 <tr class="table-danger">
@@ -62,7 +79,28 @@
     <td>{{ row[5] }}</td>
     <td>{{ row[6] }}</td>
     <td>{{ row[7] }}</td>
+<td>
+    <form role="form" action="/admin/book-control/reset/" method="post">
+    <input type="hidden" value="{{ row[0] }}" name="ISBN">
+    <input type="hidden" value="{{ row[7] }}" name="num">
+                <div class="form-group">
+        <label for="num">
+            上架数目</label>
+        <input type="number" class="form-control" name="num" />
+    </div>
+        <div class="form-group">
+        <label for="date">
+            手动输入日期（因为这个如果自动日期，不便测试）
+        </label>
+        <input type="date" class="form-control" name="date" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        确认恢复
+    </button>
+</form>
+</td>
 </tr>
 {% endfor %}
+</table>
 
 {% endblock %}

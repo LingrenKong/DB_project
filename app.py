@@ -2,10 +2,11 @@ from flask import Flask, session
 from flask import Response, request, render_template_string,  redirect, Blueprint,render_template,send_file,flash,url_for
 
 #画图功能
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-from matplotlib.backends.backend_svg import FigureCanvasSVG
-from matplotlib.figure import Figure
+#from matplotlib.backends.backend_agg import FigureCanvasAgg
+#from matplotlib.backends.backend_svg import FigureCanvasSVG
+#from matplotlib.figure import Figure
 import json
+import datetime
 
 
 app = Flask(__name__)
@@ -113,6 +114,36 @@ def admin_book_add():
         cursor.commit()
         redirect('/admin/book-control/add/')
 
+@app.route('/admin/book-control/remove/',methods=['POST'])
+def admin_book_remove():
+    Ano = session['admin_id']
+    Bno = request.form['ISBN']
+    date = request.form['date']
+    num = request.form['num']
+    sql1 = f"UPDATE Book SET removed=1, num=0 WHERE Bno='{Bno}'"
+    sql2 = f"INSERT INTO BAlter VALUES ('{Bno}','{Ano}','{date}','图书出库',{num},{num},0,'在{date}下架{num}本,由{Ano}进行操作')"
+    print(sql1,sql2)
+    cursor = get_cursor()
+    cursor.execute(sql1)
+    cursor.execute(sql2)
+    cursor.commit()
+    redirect('/admin/book-control/')
+
+@app.route('/admin/book-control/reset/',methods=['POST'])
+def admin_book_reset():
+    Ano = session['admin_id']
+    Bno = request.form['ISBN']
+    date = request.form['date']
+    num = request.form['num']
+    sql1 = f"UPDATE Book SET removed=0,num={num} WHERE Bno='{Bno}'"
+    sql2 = f"INSERT INTO BAlter VALUES ('{Bno}','{Ano}','{date}','图书重新上架',{num},0,{num},'在{date}将书重新上架{num}本,由{Ano}进行操作')"
+    print(sql1,sql2)
+    cursor = get_cursor()
+    cursor.execute(sql1)
+    cursor.execute(sql2)
+    cursor.commit()
+    redirect('/admin/book-control/')
+
 @app.route('/admin/user-control/')
 def free_user():
     if session.get('admin_id')==None or session['Atype'] not in ['超级管理','用户管理']:
@@ -127,6 +158,28 @@ def free_user():
     data = [s,t,u]
     return render_template('admin_user.html',restricted=restricted,chart1=data)
 
+@app.route('/admin/user-control/restrict/',methods=['POST'])
+def admin_user_restrict():
+    if session.get('admin_id')==None or session['Atype'] not in ['超级管理','用户管理']:
+        return redirect('/admin/')
+    Ano = session['admin_id']
+    date = request.form['date']
+    t = datetime.datetime.strptime(date,'%Y-%m-%d')
+    t = t-datetime.timedelta(21)
+    checkDate = t.strftime('%Y-%m-%d')
+    cursor = get_cursor()
+    sql = f"SELECT DISTINCT Uno FROM Borrow WHERE outDate<'{checkDate}'"
+    print(sql)
+    Unos = cursor.execute(sql).fetchall()
+    for one in Unos:
+        Uno = one[0]
+        sql1 = f"INSERT INTO UAlter VALUES ('{Uno}','{Ano}','{date}','封号','超时未还书就封号')"
+        sql2 = f"UPDATE UserList SET Urestrict=1 WHERE Uno='{Uno}'"
+        cursor.execute(sql1)
+        cursor.execute(sql2)
+    cursor.commit()
+    return redirect('/admin/user-control/')
+
 @app.route('/admin/user-control/free-act/',methods=['POST'])
 def free_act():
     if session.get('admin_id')==None or session['Atype'] not in ['超级管理','用户管理']:
@@ -136,8 +189,8 @@ def free_act():
     date = request.form['date']
     cursor = get_cursor()
     sql1 = f"UPDATE UserList SET Urestrict=0 WHERE Uno='{Uno}'"
-    sql2 = f"INSERT INTO UAlter VALUES ('{Uno}','{Ano}','{date}','解封','通过临时权限解封账号界面对于用户进行解封')"
-    print('POST-/admin/temp/act/涉及语句：',sql1,sql2)
+    sql2 = f"INSERT INTO UAlter VALUES ('{Uno}','{Ano}','{date}','解封','对于用户进行解封')"
+    print('涉及语句：',sql1,sql2)
     cursor.execute(sql1)
     cursor.execute(sql2)
     cursor.commit()

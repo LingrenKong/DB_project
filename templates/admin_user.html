@@ -41,6 +41,19 @@
 </table>
 {% endif %}
 
+<h3 class="text-success text-center">逾期的进行封号处理</h3>
+<form role="form" action="/admin/user-control/restrict/" method="post">
+        <div class="form-group">
+        <label for="date">
+            手动输入日期（因为这个如果自动日期，不便测试）
+        </label>
+        <input type="date" class="form-control" name="date" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        开始封号
+    </button>
+</form>
+
 <h3 class="text-success text-center">各类用户数量饼图</h3>
 <div id="main1" style="width: 600px;height:400px;margin:auto;"></div>
 <script type="text/javascript">
