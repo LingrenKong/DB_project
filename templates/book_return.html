@@ -42,6 +42,7 @@
       <th>ISBN</th>
       <th>书名</th>
       <th>点击还书</th>
+      <th>延期</th>
   </tr>
   </thead>
 {% for row in borrowed %}
@@ -58,6 +59,21 @@
             <button type="submit" class="btn btn-primary">
                 我要还书
             </button>
+        </form>
+    </td>
+    <td>
+        <form role="form" action="/user/return/add-time/" method="post" class="form-inline">
+            <input type="hidden" name="ISBN" value="{{ row[0] }}"/>
+            {% if row[2]==14 %}
+            <button type="submit" class="btn btn-primary">
+                续借7天
+            </button>
+            {% endif %}
+            {% if row[2]==21 %}
+            <button type="submit" class="btn btn-primary disabled">
+                已经续借过了
+            </button>
+            {% endif %}
         </form>
     </td>
 </tr>

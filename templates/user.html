@@ -11,6 +11,12 @@
             <a class="nav-link" href="/admin/">转到管理员界面</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link"  href="change-password/">修改密码</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"  href="signup/">校外用户注册</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link"  href="search/">图书信息查询</a>
           </li>
           <li class="nav-item">
@@ -48,8 +54,10 @@
         登录
     </button>
 </form>
-
 {% endif %}
+
+
+
 
 {% if login %}
 <h3 class="text-success text-center">{{ Utype }}{{ Uname }}已经成功登录</h3>
@@ -64,6 +72,8 @@
     </div>
 </form>
 {% endif %}
+
+
 
 {% if error %}
 <h3 class="text-danger text-center">您登录失败，是不是账号密码有误？</h3>

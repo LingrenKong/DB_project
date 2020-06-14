@@ -13,55 +13,47 @@
 {% endblock %}
 
 {% block right_body %}
-
-
-<h3 class="text-center text-primary">
-    校外人员在此注册
+<h3 class="text-success text-center">
+    修改密码页面
 </h3>
-<form role="form" action="/user/signup/" method="post">
-    <div class="form-group">
 
-        <label for="id">
-            账号
+<form role="form" action="/user/change-password/" method="post">
+    <div class="form-group">
+        <label for="old">
+            旧密码
         </label>
-        <input type="text" class="form-control" name="id"/>
+        <input type="password" class="form-control" name="old" />
     </div>
     <div class="form-group">
 
-        <label for="name">
-            姓名
+        <label for="new">
+            新密码
         </label>
-        <input type="text" class="form-control" name="name"/>
+        <input id='pw' type="password" class="form-control" name="new" />
     </div>
     <div class="form-group">
 
-        <label for="password">
-            密码
+        <label for="new2">
+            新密码再输入一遍
         </label>
-        <input id="pw" type="password" class="form-control" name="password" />
-    </div>
-    <div class="form-group">
-
-        <label for="password2">
-            密码（再次确认）
-        </label>
-        <input id="repw" type="password" class="form-control" name="password2"  onkeyup="checkpassword()"/>
+        <input id='repw' type="password" class="form-control" name="new2" onkeyup="checkpassword()"/>
+        <!--onkeyup="checkpassword()"使得可以调用检验-->
     </div>
     <label id="info">
     </label>
-    <div class="form-group">
+        <div class="form-group">
 
         <label for="date">
             YYYY-MM-DD形式输入注册日期（因为这个如果自动日期，不便测试）
         </label>
         <input type="date" class="form-control" name="date" />
     </div>
-    <button id="submit" type="submit" class="btn btn-primary">
-        确认提交
+    <div class="form-group">
+    <button type="submit" id='submit' class="btn btn-primary">
+        点此更改密码
     </button>
+    </div>
 </form>
-
-
 <script type="text/javascript">
     	function checkpassword() {
     		var password = document.getElementById("pw").value;
@@ -77,5 +69,9 @@
 			 }
     	}
 </script>
+
+{% if error %}
+<h3 class="text-danger text-center">您修改失败，旧密码不正确</h3>
+{% endif %}
 
 {% endblock %}

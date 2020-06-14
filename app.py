@@ -1,5 +1,6 @@
 from flask import Flask, session
-from flask import Response, request, render_template_string,  redirect, Blueprint,render_template,send_file,url_for
+from flask import Response, request, render_template_string,  redirect, Blueprint,render_template,send_file,flash,url_for
+
 #画图功能
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.backends.backend_svg import FigureCanvasSVG
@@ -135,6 +136,26 @@ def user():
         login = True
     return render_template('user.html',login=login,error=error,Uname=session.get('Uname'),Utype=session.get('Utype'),Urestrict=session.get('Urestrict'))
 
+@app.route('/user/change-password/',methods = ['GET','POST'])
+def user_changepassword():
+    Uno = session['user_id']
+    if request.method=='GET':
+        return render_template('user_changepw.html',error=False)
+    else:
+        old = get_md5(request.form['old'])
+        new = get_md5(request.form['new'])
+        date = request.form['date']
+        cursor = get_cursor()
+        if cursor.execute(f"SELECT * FROM UseList WHERE Uno={Uno} AND Upassword='{old}'").fetchone():
+            sql1 = f"UPDATE UserList SET Upassword='{new}' WHERE Uno='{Uno}'"
+            sql2 = f"INSERT INTO UAlter VALUES ('{Uno}','Admin002','{date}','修改密码','在{date}对于密码进行了修改')"
+            cursor.execute(sql1)
+            cursor.execute(sql2)
+            cursor.commit()
+            return redirect('/user/')
+        else:
+            return render_template('user_changepw.html',error=True)
+
 @app.route('/user/login/',methods = ['POST'])
 def user_login():
     Uno = request.form['id']
@@ -247,13 +268,14 @@ def book_act():
 
 @app.route('/user/return/')
 def book_return():
+    # 还书与延期的管理界面
     # 需要登录
     if not session.get('user_id') or session['user_id']==None:
         #print(session.get('user_id'))
         return redirect('/user/')
 
     cursor = get_cursor()
-    sql = f"SELECT Book.Bno,Bname FROM Borrow,Book WHERE Uno='{session['user_id']}' AND Book.Bno=Borrow.Bno AND isReturn=0"
+    sql = f"SELECT Book.Bno,Bname,maxtime FROM Borrow,Book WHERE Uno='{session['user_id']}' AND Book.Bno=Borrow.Bno AND isReturn=0"
     borrowed = cursor.execute(sql)
     return render_template('book_return.html',borrowed=borrowed)
 
@@ -270,6 +292,17 @@ def book_return_act():
     cursor.execute(sql1)
     cursor.execute(sql2)
     cursor.execute(sql3)
+    cursor.commit()
+    return redirect('/user/return/')
+
+@app.route('/user/return/add-time/',methods=['POST'])
+def book_return_addtime():
+    Uno = session['user_id']
+    Bno = request.form['ISBN']
+    cursor = get_cursor()
+    sql = f"UPDATE Borrow SET maxtime=21 WHERE Uno='{Uno}' AND Bno='{Bno}'"
+    print(sql)
+    cursor.execute(sql)
     cursor.commit()
     return redirect('/user/return/')
 
