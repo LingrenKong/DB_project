@@ -73,7 +73,7 @@ prompt-toolkit==3.0.3
 protobuf==3.6.1
 py2exe==0.9.2.2
 pybind11==2.4.3
-Pygments==2.5.2
+Pygments==2.7.4
 pymssql==2.1.4
 pyodbc==4.0.30
 pyparsing==2.4.6
