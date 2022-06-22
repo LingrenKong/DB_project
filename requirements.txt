@@ -58,7 +58,7 @@ nbformat==5.0.4
 networkx==2.4
 nltk==3.4
 notebook==6.0.3
-numpy==1.16.1
+numpy==1.22.0
 pandas==1.0.1
 pandoc==1.0.2
 pandocfilters==1.4.2
